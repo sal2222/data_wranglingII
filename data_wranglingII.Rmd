@@ -24,3 +24,87 @@ theme_set(theme_bw() + theme(legend.position = "bottom"))
 ## Data Wrangling II
 
 This section will cover ways of getting data from the web, and take a closer look at strings and factors.
+
+Load and view the data.
+
+```{r}
+
+library(p8105.datasets)
+data(nyc_airbnb)
+nyc_airbnb %>% View
+```
+
+Rename / clean some things
+
+```{r}
+nyc_airbnb <-
+  nyc_airbnb %>%
+  mutate(stars = review_scores_location / 2) %>% 
+  rename(boro = neighbourhood_group)
+  
+
+```
+
+```{r}
+nyc_airbnb %>% 
+  count(boro)
+
+nyc_airbnb %>% 
+  count(boro, neighbourhood) %>% View
+
+```
+
+
+## Some questions
+* Does rating vary by neighborhood, room type, or both?
+* How is price related to other variables?
+* Where are rentals located?
+
+* Mot expensive area? Least expensive?
+* Most unfilled days?
+* Highest density of listings?
+* What are host characteristics? How many listings?
+
+
+
+## Stars and Price
+
+Histograms
+```{r}
+nyc_airbnb %>% 
+  ggplot(aes(x = stars)) +
+  geom_histogram()
+
+nyc_airbnb %>% 
+  filter(price < 500) %>% 
+  ggplot(aes(x = price)) +
+  geom_histogram()
+
+
+
+
+```
+
+Scatter plot
+
+```{r}
+nyc_airbnb %>% 
+ggplot(aes(x = price, y = stars)) + 
+  geom_point(aes(alpha = .5)) +
+  geom_smooth(se = TRUE, method = "loess")
+```
+
+
+
+## Where are rentals located?
+
+```{r}
+nyc_airbnb %>% 
+  filter(boro == "Manhattan") %>% 
+  filter(price < 500) %>% 
+  ggplot(aes(x = longitude, y = latitude, color = price)) + 
+  geom_point(alpha = 0.2) +
+  facet_grid(~room_type) +
+  viridis::scale_color_viridis()
+```
+
