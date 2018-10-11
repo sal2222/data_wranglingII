@@ -108,3 +108,60 @@ nyc_airbnb %>%
   viridis::scale_color_viridis()
 ```
 
+
+## Start of Data Wrangling II
+
+## Reading data from the web
+
+Load packages:
+
+```{r}
+library(rvest)
+library(httr)
+```
+
+Load data from web:
+
+```{r}
+url = "http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm"
+
+drug_use_xml = read_html(url)
+
+drug_use_xml
+```
+
+
+Get the tables from the html:
+
+```{r}
+
+drug_use_xml %>%
+  html_nodes(css = "table") %>% 
+  .[[1]] %>%
+  html_table() %>% 
+  slice(-1) %>% 
+  as_tibble()
+
+```
+
+### Cost of Living
+Scrape NYC cost of living data:
+
+
+```{r}
+
+url_ny_cost = "https://www.bestplaces.net/cost_of_living/city/new_york/new_york"
+nyc_cost = read_html(url_ny_cost) %>%
+  html_nodes(css = "table") %>%
+    .[[1]] %>%
+  html_table(header = TRUE)
+
+nyc_cost
+
+```
+
+
+
+
+
+
