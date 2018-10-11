@@ -261,8 +261,143 @@ drug_use_xml</code></pre>
 nyc_cost = read_html(url_ny_cost) %&gt;%
   html_nodes(css = &quot;table&quot;) %&gt;%
     .[[1]] %&gt;%
-  html_table(header = TRUE) %&gt;% View</code></pre>
+  html_table(header = TRUE)
+
+nyc_cost</code></pre>
+<pre><code>##     COST OF LIVING New York New York      USA
+## 1          Overall      180      122      100
+## 2          Grocery      125    111.6      100
+## 3           Health      110      109      100
+## 4          Housing      313      145      100
+## 5 Median Home Cost $662,100 $282,000 $216,200
+## 6        Utilities      128      118      100
+## 7   Transportation      107      110      100
+## 8    Miscellaneous      120      110      100</code></pre>
 </div>
+<div id="harry-potter" class="section level3">
+<h3>Harry Potter</h3>
+<p>Get html:</p>
+<pre class="r"><code>hpsaga_html = read_html(&quot;https://www.imdb.com/list/ls000630791/&quot;)</code></pre>
+<p>Use CSL Selector</p>
+<pre class="r"><code>title_vec = hpsaga_html %&gt;%
+  html_nodes(&quot;.lister-item-header a&quot;) %&gt;%
+  html_text()
+
+gross_rev_vec = hpsaga_html %&gt;%
+  html_nodes(&quot;.text-small:nth-child(7) span:nth-child(5)&quot;) %&gt;%
+  html_text()
+
+runtime_vec = hpsaga_html %&gt;%
+  html_nodes(&quot;.runtime&quot;) %&gt;%
+  html_text()
+
+hpsaga_df = tibble(
+  title = title_vec,
+  rev = gross_rev_vec,
+  runtime = runtime_vec
+)
+
+hpsaga_df</code></pre>
+<pre><code>## # A tibble: 8 x 3
+##   title                                        rev      runtime
+##   &lt;chr&gt;                                        &lt;chr&gt;    &lt;chr&gt;  
+## 1 Harry Potter and the Sorcerer's Stone        $317.58M 152 min
+## 2 Harry Potter and the Chamber of Secrets      $261.99M 161 min
+## 3 Harry Potter and the Prisoner of Azkaban     $249.36M 142 min
+## 4 Harry Potter and the Goblet of Fire          $290.01M 157 min
+## 5 Harry Potter and the Order of the Phoenix    $292.00M 138 min
+## 6 Harry Potter and the Half-Blood Prince       $301.96M 153 min
+## 7 Harry Potter and the Deathly Hallows: Part 1 $295.98M 146 min
+## 8 Harry Potter and the Deathly Hallows: Part 2 $381.01M 130 min</code></pre>
+</div>
+<div id="napoleon-dynamite" class="section level3">
+<h3>Napoleon Dynamite</h3>
+<pre class="r"><code>url_napolean = &quot;https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&amp;reviewerType=avp_only_reviews&amp;sortBy=recent&amp;pageNumber=1&quot;
+
+dynamite_html = read_html(url_napolean)
+
+review_titles = dynamite_html %&gt;%
+  html_nodes(&quot;#cm_cr-review_list .review-title&quot;) %&gt;%
+  html_text()
+
+review_stars = dynamite_html %&gt;%
+  html_nodes(&quot;#cm_cr-review_list .review-rating&quot;) %&gt;%
+  html_text()
+
+review_text = dynamite_html %&gt;%
+    html_nodes(&quot;.review-data:nth-child(4)&quot;) %&gt;%
+    html_text()
+
+reviews = tibble(
+  title = review_titles,
+  stars = review_stars,
+  text = review_text
+)
+
+reviews</code></pre>
+<pre><code>## # A tibble: 10 x 3
+##    title                    stars       text                              
+##    &lt;chr&gt;                    &lt;chr&gt;       &lt;chr&gt;                             
+##  1 Has pretty sweet bow sk~ 5.0 out of~ Well, things are getting pretty s~
+##  2 Great                    5.0 out of~ Great                             
+##  3 Fast delivery            5.0 out of~ Bought as gift                    
+##  4 Lol                      5.0 out of~ Funny                             
+##  5 Very funny movie         5.0 out of~ Best ever                         
+##  6 Vote For Pedro           5.0 out of~ Flippin sweet                     
+##  7 So funny!                5.0 out of~ Best movie ever                   
+##  8 Great move               5.0 out of~ This movie is classic.its just so~
+##  9 Refund needed. Did not ~ 1.0 out of~ Refund my money.  This feature di~
+## 10 Need a laugh?            5.0 out of~ A cult favorite, purchased as a g~</code></pre>
+</div>
+</div>
+<div id="using-an-api" class="section level2">
+<h2>Using an API</h2>
+<p>Get the NYC water data.</p>
+<pre class="r"><code>nyc_water = GET(&quot;https://data.cityofnewyork.us/resource/waf7-5gvc.csv&quot;) %&gt;% 
+  content(&quot;parsed&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   new_york_city_population = col_double(),
+##   nyc_consumption_million_gallons_per_day = col_double(),
+##   per_capita_gallons_per_person_per_day = col_integer(),
+##   year = col_integer()
+## )</code></pre>
+<pre class="r"><code>nyc_water</code></pre>
+<pre><code>## # A tibble: 39 x 4
+##    new_york_city_popu~ nyc_consumption_milli~ per_capita_gallons_pe~  year
+##                  &lt;dbl&gt;                  &lt;dbl&gt;                  &lt;int&gt; &lt;int&gt;
+##  1             7102100                   1512                    213  1979
+##  2             7071639                   1506                    213  1980
+##  3             7089241                   1309                    185  1981
+##  4             7109105                   1382                    194  1982
+##  5             7181224                   1424                    198  1983
+##  6             7234514                   1465                    203  1984
+##  7             7274054                   1326                    182  1985
+##  8             7319246                   1351                    185  1986
+##  9             7342476                   1447                    197  1987
+## 10             7353719                   1484                    202  1988
+## # ... with 29 more rows</code></pre>
+<p>As JSON:</p>
+<pre class="r"><code>nyc_water = GET(&quot;https://data.cityofnewyork.us/resource/waf7-5gvc.json&quot;) %&gt;% 
+  content(&quot;text&quot;) %&gt;%
+  jsonlite::fromJSON() %&gt;%
+  as_tibble()
+
+nyc_water</code></pre>
+<pre><code>## # A tibble: 39 x 4
+##    new_york_city_popu~ nyc_consumption_milli~ per_capita_gallons_pe~ year 
+##  * &lt;chr&gt;               &lt;chr&gt;                  &lt;chr&gt;                  &lt;chr&gt;
+##  1 7102100             1512                   213                    1979 
+##  2 7071639             1506                   213                    1980 
+##  3 7089241             1309                   185                    1981 
+##  4 7109105             1382                   194                    1982 
+##  5 7181224             1424                   198                    1983 
+##  6 7234514             1465                   203                    1984 
+##  7 7274054             1326                   182                    1985 
+##  8 7319246             1351                   185                    1986 
+##  9 7342476             1447                   197                    1987 
+## 10 7353719             1484                   202                    1988 
+## # ... with 29 more rows</code></pre>
 </div>
 
 
