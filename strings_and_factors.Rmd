@@ -90,3 +90,75 @@ string_vec = c(
 str_detect(string_vec, "7.11")
 ```
 
+Dealing with special characters
+
+```{r}
+
+string_vec = c(
+  'The CI is [2, 5]',
+  ':-]',
+  ':-[',
+  'I found the answer on pages [6-7]'
+  )
+
+str_detect(string_vec, "\\[")
+```
+
+### Pulse data
+
+
+Tidy the Pulse dataset
+
+```{r}
+pulse_data = haven::read_sas("./public_pulse_data.sas7bdat") %>%
+  janitor::clean_names() %>%
+  gather(key = visit, value = bdi, bdi_score_bl:bdi_score_12m) %>%
+  mutate(visit = str_replace(visit, "bdi_score_", ""),
+         visit = str_replace(visit, "bl", "00m"),
+         visit = fct_relevel(visit, str_c(c("00", "01", "06", "12"), "m"))) %>%
+  arrange(id, visit)
+
+
+print(pulse_data, n = 12)
+```
+
+
+### NSDUH data
+```{r}
+url = "http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm"
+drug_use_xml = read_html(url)
+
+table_marj = (drug_use_xml %>% html_nodes(css = "table")) %>% 
+  .[[1]] %>%
+  html_table() %>%
+  slice(-1) %>%
+  as_tibble()
+
+```
+
+Clean the imported data.
+
+```{r}
+
+data_marj = 
+  table_marj %>%
+  select(-contains("P Value")) %>%
+  gather(key = key, value = percent, -State) %>%
+  separate(key, into = c("age", "year"), sep = "\\(") %>%
+  mutate(year = str_replace(year, "\\)", ""),
+         percent = str_replace(percent, "[a-c]$", ""),
+         percent = as.numeric(percent)) %>%
+  filter(!(State %in% c("Total U.S.", "Northeast", "Midwest", "South", "West")))
+```
+
+Plot 
+
+```{r}
+data_marj %>%
+  filter(age == "12-17") %>% 
+  mutate(State = fct_reorder(State, percent)) %>% 
+  ggplot(aes(x = State, y = percent, color = year)) + 
+    geom_point() + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
