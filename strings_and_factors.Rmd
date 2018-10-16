@@ -1,0 +1,25 @@
+---
+title: "strings_and_factors"
+author: "Stephen Lewandowski"
+date: "October 16, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+
+  library(tidyverse)
+  library(ggridges)
+  library(patchwork)   # devtools::install_github("thomasp85/patchwork")
+  library(rvest)
+  library(p8105.datasets)
+
+theme_set(theme_bw() + theme(legend.position = "bottom"))
+```
+
+## Strings and Factors
