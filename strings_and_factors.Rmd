@@ -23,3 +23,70 @@ theme_set(theme_bw() + theme(legend.position = "bottom"))
 ```
 
 ## Strings and Factors
+
+### Regular Expressions: Regex
+
+```{r}
+string_vec = c("my", "name", "is", "steve")
+
+str_detect(string_vec, "steve")
+
+str_replace(string_vec, "steve", "Steve")
+```
+
+
+For exact matches, designate matches at the beginning or end of a line.
+
+```{r}
+string_vec = c(
+  "i think we all rule for participating",
+  "i think i have been caught",
+  "i think this will be quite fun actually",
+  "it will be fun, i think"
+  )
+
+str_detect(string_vec, "^i think")
+
+str_detect(string_vec, "i think$")
+```
+
+
+Designate a list of characters that will count as a match.
+
+```{r}
+string_vec = c(
+  "Y'all remember Pres. HW Bush?",
+  "I saw a green bush",
+  "BBQ and Bushwalking at Molonglo Gorge",
+  "BUSH!!"
+  )
+
+str_detect(string_vec,"[Bb]ush")
+```
+
+Provide a range of letters or numbers that count as a match.
+
+```{r}
+string_vec = c(
+  '7th inning stretch',
+  '1st half soon to begin. Texas won the toss.',
+  'she is 5 feet 4 inches tall',
+  '3AM - cant sleep :('
+  )
+
+str_detect(string_vec, "^[0-9][a-zA-Z]")
+```
+
+Symbol `.` matches everything
+
+```{r}
+string_vec = c(
+  'Its 7:11 in the evening',
+  'want to go to 7-11?',
+  'my flight is AA711',
+  'NetBios: scanning ip 203.167.114.66'
+  )
+
+str_detect(string_vec, "7.11")
+```
+

@@ -131,6 +131,57 @@ $(document).ready(function () {
 
 <div id="strings-and-factors" class="section level2">
 <h2>Strings and Factors</h2>
+<div id="regular-expressions-regex" class="section level3">
+<h3>Regular Expressions: Regex</h3>
+<pre class="r"><code>string_vec = c(&quot;my&quot;, &quot;name&quot;, &quot;is&quot;, &quot;steve&quot;)
+
+str_detect(string_vec, &quot;steve&quot;)</code></pre>
+<pre><code>## [1] FALSE FALSE FALSE  TRUE</code></pre>
+<pre class="r"><code>str_replace(string_vec, &quot;steve&quot;, &quot;Steve&quot;)</code></pre>
+<pre><code>## [1] &quot;my&quot;    &quot;name&quot;  &quot;is&quot;    &quot;Steve&quot;</code></pre>
+<p>For exact matches, designate matches at the beginning or end of a line.</p>
+<pre class="r"><code>string_vec = c(
+  &quot;i think we all rule for participating&quot;,
+  &quot;i think i have been caught&quot;,
+  &quot;i think this will be quite fun actually&quot;,
+  &quot;it will be fun, i think&quot;
+  )
+
+str_detect(string_vec, &quot;^i think&quot;)</code></pre>
+<pre><code>## [1]  TRUE  TRUE  TRUE FALSE</code></pre>
+<pre class="r"><code>str_detect(string_vec, &quot;i think$&quot;)</code></pre>
+<pre><code>## [1] FALSE FALSE FALSE  TRUE</code></pre>
+<p>Designate a list of characters that will count as a match.</p>
+<pre class="r"><code>string_vec = c(
+  &quot;Y'all remember Pres. HW Bush?&quot;,
+  &quot;I saw a green bush&quot;,
+  &quot;BBQ and Bushwalking at Molonglo Gorge&quot;,
+  &quot;BUSH!!&quot;
+  )
+
+str_detect(string_vec,&quot;[Bb]ush&quot;)</code></pre>
+<pre><code>## [1]  TRUE  TRUE  TRUE FALSE</code></pre>
+<p>Provide a range of letters or numbers that count as a match.</p>
+<pre class="r"><code>string_vec = c(
+  '7th inning stretch',
+  '1st half soon to begin. Texas won the toss.',
+  'she is 5 feet 4 inches tall',
+  '3AM - cant sleep :('
+  )
+
+str_detect(string_vec, &quot;^[0-9][a-zA-Z]&quot;)</code></pre>
+<pre><code>## [1]  TRUE  TRUE FALSE  TRUE</code></pre>
+<p>Symbol <code>.</code> matches everything</p>
+<pre class="r"><code>string_vec = c(
+  'Its 7:11 in the evening',
+  'want to go to 7-11?',
+  'my flight is AA711',
+  'NetBios: scanning ip 203.167.114.66'
+  )
+
+str_detect(string_vec, &quot;7.11&quot;)</code></pre>
+<pre><code>## [1]  TRUE  TRUE FALSE  TRUE</code></pre>
+</div>
 </div>
 
 
